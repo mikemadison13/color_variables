@@ -1,0 +1,4 @@
+services:
+  color_variables.cache_flush:
+    class: Drupal\color_variables\ColorVariablesFlushCache
+    arguments: ['@cache.render']

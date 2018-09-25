@@ -1,0 +1,65 @@
+<?php
+
+/**
+ * @file
+ * Contains color_variables.module.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function color_variables_form_system_theme_settings_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $config = \Drupal::configFactory()->get('colors.color_variables');
+  $form['saved_palette'] = [
+    '#type' => 'hidden',
+    '#access' => FALSE,
+    '#value' => $config->get('palette'),
+  ];
+  $form['#submit'][] = 'color_variables_override';
+}
+
+/**
+ * Custom submit handler to write selected colors in SASS file.
+ */
+function color_variables_override(array $form, FormStateInterface $form_state) {
+  // Avoid color settings spilling over to theme settings.
+  $input = $form_state->getUserInput();
+
+  // Get the updated value and old values.
+  // We will calculate different of both array, so we will have only items that
+  // are changed.
+  $new_palette = $input['palette'];
+  $saved_pallets = $form_state->getValue('saved_palette');
+
+  $palette = $new_palette;
+  if (!empty($saved_pallets)) {
+    $palette = array_diff($new_palette, $saved_pallets);
+  }
+
+  if (!empty($palette)) {
+    /** @var \Drupal\color_variables\ColorVariablesFlushCacheInterface $service */
+    $service = \Drupal::service('color_variables.cache_flush');
+    $service->updateScss();
+  }
+
+}
+
+
+/**
+ * Implements hook_preprocess_html().
+ */
+function color_variables_preprocess_html(&$variables) {
+  $colors = \Drupal::configFactory()->get('colors.color_variables');
+  $data = $colors->getRawData();
+  if (isset($data['palette'])) {
+    $variables['style'] = NULL;
+    $variables['script'] = NULL;
+    $variables['script'] = json_encode($data['palette']);
+    foreach ($data['palette'] as $key => $hex) {
+      $variables['style'] .= "--$key: $hex; \n";
+
+    }
+  }
+}

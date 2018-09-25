@@ -1,0 +1,46 @@
+{
+  "name": "drupal/color_variables",
+  "description": "Provides custom color configuration for Newell modules.",
+  "type": "drupal-module",
+  "homepage": "https://www.drupal.org/project/color_variable",
+  "license": "GPL-2.0+",
+  "authors": [
+    {
+      "name": "Mike Madison",
+      "homepage": "https://www.drupal.org/u/mikemadison"
+    },
+    {
+      "name": "Other contributors",
+      "homepage":""
+    }
+  ],
+  "support": {
+    "issues": "https://www.drupal.org/project/issues/color_variable",
+    "source": "http://git.drupal.org/project/color_variable.git"
+  },
+  "repositories": {
+    "ponyfill": {
+      "type": "package",
+      "package": {
+        "name": "jhildenbiddle/css-vars-ponyfill",
+        "version": "1.9.0",
+        "type": "drupal-library",
+        "extra": {
+          "installer-name": "ponyfill"
+        },
+        "dist": {
+          "url": "https://api.github.com/repos/jhildenbiddle/css-vars-ponyfill/zipball",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0"
+        }
+      }
+    }
+  },
+  "require": {
+    "jhildenbiddle/css-vars-ponyfill": "^1.9"
+  },
+  "require-dev": {},
+  "suggest": {}
+}
